@@ -3,7 +3,13 @@ Fx= float(input("Add a horizontal force (positive is right negative is left): ")
 Fy= float(input("Add a vertical force ( positive is up negative is down): "))
 Fz= float(input("Add a depth force (positve is forward negative is backward): "))
 m = float(input("Set mass: "))
+if m<=0:
+	print("Mass must be positive")
+	exit()
 t= float(input("Set time: "))
+if t<=0:
+	print("Time must be positive")
+	exit()
 gravity= input("""Type 1 if you want gravity
 Type 2 if you don't want gravity
 : """)
