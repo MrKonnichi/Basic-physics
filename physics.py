@@ -7,9 +7,9 @@ t= float(input("Set time: "))
 gravity= input("""Type 1 if you want gravity
 Type 2 if you don't want gravity
 : """)
-if gravity == 1:
+if gravity == "1":
 	weight = m*9.8
-elif gravity == 2:
+elif gravity == "2":
 	weight=0
 else:
 	print("Please choose 1 or 2")
