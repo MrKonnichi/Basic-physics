@@ -1,7 +1,7 @@
 print("The initial coordinates of the object are 0,0,0 (every digit represents a meter)")
-Fx= float(input("Add a horizontal force (positive is right negative is left: "))
-Fy= float(input("Add a vertical force ( positive is up negative is down: "))
-Fz= float(input("Add a depth force (positve is forward negative is backward: "))
+Fx= float(input("Add a horizontal force (positive is right negative is left): "))
+Fy= float(input("Add a vertical force ( positive is up negative is down): "))
+Fz= float(input("Add a depth force (positve is forward negative is backward): "))
 m = float(input("Set mass: "))
 t= float(input("Set time: "))
 gravity= input("""Type 1 if you want gravity
