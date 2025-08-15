@@ -16,22 +16,30 @@ else:
 	print("Please choose a cube or a sphere")
 	exit()
 A = float(input("Set the frontal area in m²: "))
+g=9.80665 
+Pair=1.225
 ax=Fx/m
 ay=Fy/m
 az=Fz/m
 t=1/60
-vx=ax*t
-vy=ay*t
-vz=az*t
-x=0
-y=0
-z=0
+vx=ax*0.2
+vy=ay*0.2
+vz=az*0.2
+DragX=-0.5*Pair*vx*abs(vx)*Cd*A
+DragY=-0.5*Pair*vy*abs(vy)*Cd*A
+DragZ=-0.5*Pair*vz*abs(vz)*Cd*A
+ax=Fx/m + DragX/m
+ay=Fy/m + DragY/m -g
+az=Fz/m + DragZ/m
+x=vx*t
+y=vy*t
+z=vz*t
 while True:
-	DragX=-0.6125*vx*abs(vx)*Cd*A
-	DragY=-0.6125*vy*abs(vy)*Cd*A
-	DragZ=-0.6125*vz*abs(vz)*Cd*A
+	DragX=-0.5*Pair*vx*abs(vx)*Cd*A
+	DragY=-0.5*Pair*vy*abs(vy)*Cd*A
+	DragZ=-0.5*Pair*vz*abs(vz)*Cd*A
 	ax= DragX/m
-	ay= -9.8 + DragY/m
+	ay= -g + DragY/m
 	az= DragZ/m
 	vx=vx+ax*t
 	vy=vy+ay*t
