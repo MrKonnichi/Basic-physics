@@ -1,3 +1,4 @@
+import time
 print("The initial coordinates of the object are 0,0,0 (every digit represents a meter)")
 Fx= float(input("Add a horizontal force (positive is right negative is left): "))
 Fy= float(input("Add a vertical force ( positive is up negative is down): "))
@@ -6,32 +7,30 @@ m = float(input("Set mass: "))
 if m<=0:
 	print("Mass must be positive")
 	exit()
-t= float(input("Set time: "))
-if t<=0:
-	print("Time must be positive")
-	exit()
-gravity= input("""Type 1 if you want gravity
-Type 2 if you don't want gravity
-: """)
-if gravity == "1":
-	weight = m*9.8
-elif gravity == "2":
-	weight=0
-else:
-	print("Please choose 1 or 2")
-	exit()
-Fy-=weight
 ax=Fx/m
 ay=Fy/m
 az=Fz/m
-vx=0
-vy=0
-vz=0
-x=0.0
-y=0.0
-z=0.0
-x=x+vx*t+0.5*ax*t**2
-y=y+vy*t+0.5*ay*t**2
-z=z+vz*t+0.5*az*t**2
-point = [x,y,z]
-print(point)
+t=1/60
+vx=ax*t
+vy=ay*t
+vz=az*t
+x=0
+y=0
+z=0
+Cd=0.47
+A=1
+while True:
+	DragX=-0.6125*vx*abs(vx)*Cd*A
+	DragY=-0.6125*vy*abs(vy)*Cd*A
+	DragZ=-0.6125*vz*abs(vz)*Cd*A
+	ax= DragX/m
+	ay= -9.8 + DragY/m
+	az= DragZ/m
+	vx=vx+ax*t
+	vy=vy+ay*t
+	vz=vz+az*t
+	x=x+vx*t
+	y=y+vy*t
+	z=z+vz*t
+	print(round(x,2),round(y,2),round(z,2))
+	time.sleep(t)
