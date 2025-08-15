@@ -2,7 +2,7 @@ import time
 print("The initial coordinates of the object are 0,0,0 (every digit represents a meter)")
 Fx= float(input("Add a horizontal force (positive is right negative is left): "))
 Fy= float(input("Add a vertical force ( positive is up negative is down): "))
-Fz= float(input("Add a depth force (positve is forward negative is backward): "))
+Fz= float(input("Add a depth force (positive is forward negative is backward): "))
 m = float(input("Set mass in kg: "))
 if m<=0:
 	print("Mass must be positive")
