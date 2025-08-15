@@ -1,8 +1,8 @@
 import time
 print("The initial coordinates of the object are 0,0,0 (every digit represents a meter)")
-Fx= float(input("Add a horizontal force (positive is right negative is left): "))
-Fy= float(input("Add a vertical force ( positive is up negative is down): "))
-Fz= float(input("Add a depth force (positive is forward negative is backward): "))
+Fx= float(input("Add an initial horizontal force (x axis) (positive is right negative is left): "))
+Fy= float(input("Add an initial vertical force (y axis) ( positive is up negative is down): "))
+Fz= float(input("Add an initial depth force (z axis) (positive is forward negative is backward): "))
 m = float(input("Set mass in kg: "))
 if m<=0:
 	print("Mass must be positive")
@@ -39,5 +39,5 @@ while True:
 	x=x+vx*t
 	y=y+vy*t
 	z=z+vz*t
-	print(round(x,2),round(y,2),round(z,2))
+	print(f"Coordinates: x={x:.2f}, y={y:.2f}, z={z:.2f}",end="\r")
 	time.sleep(t)
