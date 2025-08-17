@@ -1,53 +1,52 @@
-import time
 import pygame
-g=9.80665 #gravity
-Pair=1.225 #density of air
-t=1/60
-def set_fps(fps):
-	global t
-	t=1/fps
-ppm=64
-def set_ppm(new_ppm):
-	global ppm
-	ppm=new_ppm
-class Object:
-	def __init__(self,x,y,m,shape,size):
-		self.g=g
-		self.x=x
-		self.y=y
-		self.m=m
-		self.vx=0
-		self.vy=0
-		self.meterx=x/ppm
-		self.metery=y/-ppm
-		self.size=size/ppm
-		if shape.lower() == "square":
-			self.Cd=1.05
-			self.FA=self.size*self.size
-			self.length=size
-		elif shape.lower() == "circle":
-			self.Cd=0.47
-			self.FA=3.1416*self.size*self.size
-			self.radius=size
-	def enable(self):
-		#Drag
-		DragX=-0.5*Pair*self.vx*abs(self.vx)*self.Cd*self.FA
-		DragY=-0.5*Pair*self.vy*abs(self.vy)*self.Cd*self.FA
-		#Acceleration
-		ax= DragX/self.m
-		ay= DragY/self.m -self.g
-		#Velocity
-		self.vx+=ax*t
-		self.vy+=ay*t
-		#Displacement
-
-		self.meterx=self.x/ppm + self.vx*t
-		self.metery=self.y/-ppm + self.vy*t		
-		self.x=self.meterx*64
-		self.y=self.metery*-64
-			
+import physics
+#pygame setup
+pygame.init()
+info = pygame.display.Info()
+screen = pygame.display.set_mode((info.			current_w, info.current_h))
+running=True
+#setting colors
+white=(255,255,255)
+black=(0,0,0)
+red=(255,0,0)
+clock = pygame.time.Clock()
+ball=physics.Object((600,600),5,"circle",20)  
+ball2=physics.Object((600,600),5,"circle",20)  
+if pygame.joystick.get_count() > 0:
+	joystick = pygame.joystick.Joystick(0)
+	joystick.init()
+else:
+	joystick=False
+while True:
+	screen.fill(black) 
+	ball.dynamic() #make ball move (must be in loop)
+	ball2.dynamic()
+	if ball.y>info.current_h-99-ball.radius:
+		ball.y=info.current_h-99-ball.radius
+		ball.g=0
+		ball.vy=0
+	else:
+		ball.g=physics.g
+	if ball2.y>info.current_h-99-ball.radius:
+		ball2.y=info.current_h-99-ball.radius
+		ball2.g=0
+		ball2.vy=0
+	else:
+		ball2.g=physics.g
+	for event in pygame.event.get():
+		if event.type==pygame.FINGERMOTION:
+			if event.dx > 0.01:
+				ball.impulse(1,0)
+			elif event.dx < -0.01:
+				ball.impulse(-1,0)
+			elif event.dy < -0.01:
+				ball.impulse(0,1)
 		
-	def impulse(self, Fx, Fy):
-			self.vx+=Fx/self.m
-			self.vy+=Fy/self.m
-			self.g=g
+	pygame.draw.rect(screen, red, (0, info.current_h-99, info.current_w, 100))
+
+	pygame.draw.circle(screen,white,(ball.x,ball.y),ball.radius) #draw the ball
+	pygame.draw.circle(screen,white,(ball2.x,ball2.y),ball2.radius) #draw the ball
+	#squarex = square.x - square.length/2
+	#squarey = square.x-  square.length/2
+	pygame.display.update() #refresh screen
+	clock.tick(60)
