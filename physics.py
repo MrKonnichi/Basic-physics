@@ -1,52 +1,98 @@
-import pygame
-import physics
-#pygame setup
-pygame.init()
-info = pygame.display.Info()
-screen = pygame.display.set_mode((info.			current_w, info.current_h))
-running=True
-#setting colors
-white=(255,255,255)
-black=(0,0,0)
-red=(255,0,0)
-clock = pygame.time.Clock()
-ball=physics.Object((600,600),5,"circle",20)  
-ball2=physics.Object((600,600),5,"circle",20)  
-if pygame.joystick.get_count() > 0:
-	joystick = pygame.joystick.Joystick(0)
-	joystick.init()
-else:
-	joystick=False
-while True:
-	screen.fill(black) 
-	ball.dynamic() #make ball move (must be in loop)
-	ball2.dynamic()
-	if ball.y>info.current_h-99-ball.radius:
-		ball.y=info.current_h-99-ball.radius
-		ball.g=0
-		ball.vy=0
-	else:
-		ball.g=physics.g
-	if ball2.y>info.current_h-99-ball.radius:
-		ball2.y=info.current_h-99-ball.radius
-		ball2.g=0
-		ball2.vy=0
-	else:
-		ball2.g=physics.g
-	for event in pygame.event.get():
-		if event.type==pygame.FINGERMOTION:
-			if event.dx > 0.01:
-				ball.impulse(1,0)
-			elif event.dx < -0.01:
-				ball.impulse(-1,0)
-			elif event.dy < -0.01:
-				ball.impulse(0,1)
-		
-	pygame.draw.rect(screen, red, (0, info.current_h-99, info.current_w, 100))
+import time
+import random
+g=9.80665 #gravity
+Pair=1.225 #density of air
+t=1/60
+objects= []
 
-	pygame.draw.circle(screen,white,(ball.x,ball.y),ball.radius) #draw the ball
-	pygame.draw.circle(screen,white,(ball2.x,ball2.y),ball2.radius) #draw the ball
-	#squarex = square.x - square.length/2
-	#squarey = square.x-  square.length/2
-	pygame.display.update() #refresh screen
-	clock.tick(60)
+
+def collision():
+	for i, object1 in enumerate(objects):
+		for object2 in objects[i+1:]:
+			if object1.shape=="circle" and object2.shape=="circle":
+				dx=object2.x - object1.x
+				dy=object2.y - object1.y
+				distance=(dx**2+dy**2)**0.5
+				overlap=object1.radius+object2.radius-distance
+				if distance==0:
+					nx=random.uniform(-1,1)
+					ny=random.uniform(-1,1)
+					distance=1
+				else:
+					nx=dx/distance
+					ny=dy/distance
+				if overlap>0:
+					object1.x -= nx * overlap / 2
+					object1.y -= ny * overlap / 2
+					object2.x += nx * overlap / 2
+					object2.y += ny * overlap / 2
+	
+
+
+
+def set_fps(fps):
+	global t
+	t=1/fps
+ppm=64
+def set_ppm(new_ppm):
+	global ppm
+	ppm=new_ppm
+class Object:
+	
+	def __init__(self,position,m,shape,size):
+		self.g=g
+		self.position=position
+		self.x,self.y=position
+		self.m=m
+		self.vx=0
+		self.vy=0
+		self.meterx=self.x/ppm
+		self.metery=self.y/-ppm
+		self.mathsize=size/ppm
+		self.shape=shape
+		if shape.lower() == "square":
+			self.Cd=1.05
+			self.FA=self.mathsize*self.mathsize
+			self.length=size
+		elif shape.lower() == "circle":
+			self.Cd=0.47
+			self.FA=3.1416*self.mathsize*self.mathsize
+			self.radius=size
+			self.length=size*2
+			objects.append(self)
+
+			
+	def dynamic(self):
+		collision()
+		#Drag
+		DragX=-0.5*Pair*self.vx*abs(self.vx)*self.Cd*self.FA
+		DragY=-0.5*Pair*self.vy*abs(self.vy)*self.Cd*self.FA
+		#Acceleration
+		ax= DragX/self.m
+		ay= DragY/self.m -self.g
+		#Velocity
+		self.vx+=ax*t
+		self.vy+=ay*t
+		#Displacement
+
+		self.meterx=self.x/ppm + self.vx*t
+		self.metery=self.y/-ppm + self.vy*t		
+		self.x=self.meterx*64
+		self.y=self.metery*-64
+		self.position=self.x,self.y
+	
+	def kinematic(self):
+		self.vx
+		self.vy
+	
+	def impulse(self, x, y):
+		self.vx+=x
+		self.vy+=y
+		self.g=g #remove after developing collisions
+		
+					
+				
+
+
+
+		
